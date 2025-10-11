@@ -34,6 +34,23 @@ export const getVersionData = (req: Request, res: Response) => {
       }
       break;
 
+      case "09.02.02":
+      version = {
+        res: `${http}://${IP}/res`,
+        api: `${http}://${IP}/api`,
+        web: `${WEB_URL}`,
+        maintenance_bucket: `${http}://${IP}/`,
+        maintenance_env: "maintenance_env",
+      };
+      if (API_NOT_AVAILABLE_MAINTENANCE) {
+        const newMaintenanceFields = {
+          new_maintenance_bucket: `${http}://${IP}/`,
+          new_maintenance_env: "maintenance_env",
+        };
+        version = { ...newMaintenanceFields, ...version };
+      }
+      break;
+
     default:
       // Fallback or log unexpected version
 
