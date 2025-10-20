@@ -16,5 +16,13 @@ src/ipconfig.ts
 *.list
 *.fpk
 
+*.apk
+*.idsig
 
 /website/
+
+scripts/patcher/out/
+
+src/middleware/logs/
+
+scripts/packing/files/

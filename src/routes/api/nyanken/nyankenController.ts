@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { log } from "console";
 
 export const progress = (req: Request, res: Response) => {
   //Initial Load
@@ -151,6 +152,34 @@ export const QuestList = (req: Request, res: Response) => {
         time_display_flag: 0,
       },
     ],
+  };
+  encryptAndSend(data, res, req);
+};
+
+
+export const nyankenStart = (req: Request, res: Response) => {
+
+  console.log(req.body);
+
+  const data = {
+    effect_id: 42,
+    is_island: 0, //triggers /api/nyanken/islandInfoGet
+  };
+  encryptAndSend(data, res, req);
+};
+
+export const nyankenResult = (req: Request, res: Response) => {
+
+  console.log(req.body);
+
+  const data = {
+    effect_id: 42,
+    is_island: 0, //triggers /api/nyanken/islandInfoGet
+    island_result: {
+      normal_result_list: [
+        //Normal item list { equipment:[]}
+      ],
+    },
   };
   encryptAndSend(data, res, req);
 };

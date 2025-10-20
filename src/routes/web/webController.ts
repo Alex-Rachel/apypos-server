@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import path from 'path';
+import { IP } from "../../config";
 
-const huntersWebUrl = "https://localhost/" //this is the hunters.mh-xr.jp
+const huntersWebUrl = `${IP}` //this is the hunters.mh-xr.jp
 
 export const getWebContent = (req: Request, res: Response) => {
   

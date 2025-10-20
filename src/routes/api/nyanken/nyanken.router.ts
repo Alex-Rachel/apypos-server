@@ -7,7 +7,8 @@ const nyankanRouter = Router();
 nyankanRouter.post("/progress", nyankanController.progress);
 nyankanRouter.post("/historyGet", nyankanController.historyGet);
 nyankanRouter.post("/questlist", nyankanController.QuestList);
-// nyankanRouter.post("/start", notImplementedController.blankResponseEncrypted);
+nyankanRouter.post("/start", nyankanController.nyankenStart);
 nyankanRouter.post("/islandInfoGet", nyankanController.islandInfoGet);
+nyankanRouter.post("/result", nyankanController.nyankenResult);
 
 export default nyankanRouter;

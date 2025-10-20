@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL } from "../../config";
+import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL, bucket_url } from "../../config";
 
 export const getVersionData = (req: Request, res: Response) => {
   const versionNumber = req.params[0];
@@ -20,6 +20,7 @@ export const getVersionData = (req: Request, res: Response) => {
     case "09.03.06":
       version = {
         res: `${http}://${IP}/res`,
+        // res: `${bucket_url}res`,
         api: `${http}://${IP}/api`,
         web: `${WEB_URL}`,
         maintenance_bucket: `${http}://${IP}/`,

@@ -197,48 +197,85 @@ export const PaymentGet = (req: Request, res: Response) => {
 };
 
 export const equipLevelup = async (req: Request, res: Response) => {
-  //TODO:
-  //This function upgrades equipment it uses req.body.eqp_obj_id to find the equipment in the box
-  //based on req.body.num is the amount of steps it needs to be upgraded
-  if (req.body.is_use_reinforcement == 2) {
-    //use zenny and armor sphere
+  // Authenticate by session
+  const filter = { current_session: req.body.session_id };
+  const doc = await User.findOne(filter);
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); // Not authenticated
   }
+
+  const equipmentId: string = req.body.eqp_obj_id;
+  const steps: number = Math.max(1, Number(req.body.num || 1));
+
+  // Find equipment in user's box
+  const equipmentIndex = doc.box.equipments.findIndex(
+    (eq) => eq.equipment_id === equipmentId,
+  );
+
+  if (equipmentIndex === -1) {
+    // Equipment not found
+    return encryptAndSend({}, res, req, 2001, 0, "equipment not found");
+  }
+
+  // Apply level up
+  const equipment = doc.box.equipments[equipmentIndex];
+  const currentLevel = Number(equipment.elv || 0);
+  const newLevel = currentLevel + steps;
+  equipment.elv = newLevel;
+
+  // Optional: handle zenny/material consumption when is_use_reinforcement == 2
+  // Not fully implemented due to pricing tables/material ids pending in repo
+
+  // Persist
+  await User.findByIdAndUpdate(doc.id, { box: doc.box });
 
   const data = {
     levelup: {
-      equipment: {
-        auto_potential_composite: 0,
-        awaked: 0,
-        created: 0,
-        elv: 1,
-        endAwakeCount: 0,
-        endAwakeRemain: 0,
-        end_remain: 0,
-        equipment_id: req.body.eqp_obj_id,
-        evolve_start_time: 0,
-        favorite: 0,
-        is_awake: 0,
-        is_complete_auto_potential_composite: 0,
-        mst_equipment_id: calcMstId(req.body.eqp_obj_id),
-        potential: 0,
-        slv: 0,
-        start_remain: 0,
-      },
-      // materials: [
-      //   // {
-      //   //   amount:0,
-      //   //   mst_material_id:0
-      //   // }
-      // ],
-      // payments: [
-      //   // {
-      //   //   amount: 50,
-      //   //   mst_payment_id: 1573159746,
-      //   // },
-      // ],
-      //zenny: 0,
+      equipment: equipment,
+      // materials: [],
+      // payments: [],
+      // zenny: doc.box.zeny,
     },
   };
+
+  // const data = {
+  //   levelup: {
+  //     equipment: {
+  //       auto_potential_composite: 0,
+  //       awaked: 0,
+  //       created: 0,
+  //       elv: 1,
+  //       endAwakeCount: 0,
+  //       endAwakeRemain: 0,
+  //       end_remain: 0,
+  //       equipment_id: req.body.eqp_obj_id,
+  //       evolve_start_time: 0,
+  //       favorite: 0,
+  //       is_awake: 0,
+  //       is_complete_auto_potential_composite: 0,
+  //       mst_equipment_id: calcMstId(req.body.eqp_obj_id),
+  //       potential: 0,
+  //       slv: 0,
+  //       start_remain: 0,
+  //     },
+  //     // materials: [
+  //     //   // {
+  //     //   //   amount:0,
+  //     //   //   mst_material_id:0
+  //     //   // }
+  //     // ],
+  //     // payments: [
+  //     //   // {
+  //     //   //   amount: 50,
+  //     //   //   mst_payment_id: 1573159746,
+  //     //   // },
+  //     // ],
+  //     //zenny: 0,
+  //     equipment: equipment,
+  //     // materials: [],
+  //     // payments: [],
+  //     // zenny: doc.box.zeny,
+  //   },
   encryptAndSend(data, res, req);
 };
 export const awake = async (req: Request, res: Response) => {
